@@ -16,11 +16,11 @@ class CreateAppointmentService {
   }: CreateAppointmentDTO): Promise<Appointment> {
     const appointmentsRepository = getCustomRepository(AppointmentsRepository);
 
-    // Format date
+    // Format date TO CHECK if is booked
     const appointmentDate = startOfHour(date);
 
     // Check if it is a available apponintment
-    const hasAppointmentInSameDate = !!appointmentsRepository.findByDate(
+    const hasAppointmentInSameDate = await appointmentsRepository.findByDate(
       appointmentDate,
     );
 
