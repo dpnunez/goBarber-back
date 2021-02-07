@@ -5,14 +5,14 @@ import { Appointment } from '../models';
 import { AppointmentsRepository } from '../repositories';
 
 interface CreateAppointmentDTO {
-  provider: string;
+  provider_id: string;
   date: Date;
 }
 
 class CreateAppointmentService {
   public async execute({
     date,
-    provider,
+    provider_id,
   }: CreateAppointmentDTO): Promise<Appointment> {
     const appointmentsRepository = getCustomRepository(AppointmentsRepository);
 
@@ -28,7 +28,7 @@ class CreateAppointmentService {
       throw Error('This appointment is already booked');
 
     const appointment = appointmentsRepository.create({
-      provider,
+      provider_id,
       date: appointmentDate,
     });
 
