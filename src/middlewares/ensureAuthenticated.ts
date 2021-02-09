@@ -3,6 +3,12 @@ import { verify } from 'jsonwebtoken';
 
 import authConfig from '../config/auth';
 
+interface TokenPayload {
+  iat: number;
+  exp: number;
+  sub: string;
+}
+
 const ensureAuthenticated = (
   req: Request,
   res: Response,
@@ -18,6 +24,11 @@ const ensureAuthenticated = (
 
   try {
     const decoded = verify(token, authConfig.jwt.secret);
+    const { sub } = decoded as TokenPayload;
+
+    req.user = {
+      id: sub,
+    };
 
     return next();
   } catch {
