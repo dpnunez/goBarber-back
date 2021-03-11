@@ -1,18 +1,25 @@
 import { Router } from 'express';
 import { getRepository } from 'typeorm';
+import multer from 'multer';
+import uploadConfig from '../config/upload';
 
 import { User } from '../models';
 import { CreateUserService } from '../services';
 
-const usersRouter = Router();
+import { ensureAuthenticated } from '../middlewares';
 
-usersRouter.get('/', async (_, res) => {
+const usersRouter = Router();
+const upload = multer(uploadConfig);
+
+// index
+usersRouter.get('/', ensureAuthenticated, async (_, res) => {
   const usersRepository = getRepository(User);
   const users = await usersRepository.find();
 
   return res.json(users);
 });
 
+// signup
 usersRouter.post('/', async (req, res) => {
   try {
     const { email, password, name } = req.body;
@@ -38,5 +45,14 @@ usersRouter.post('/', async (req, res) => {
     return res.status(400).json({ error: err.message });
   }
 });
+
+usersRouter.patch(
+  '/avatar',
+  ensureAuthenticated,
+  upload.single('avatar'),
+  (req, res) => {
+    return res.json({ ok: true });
+  },
+);
 
 export default usersRouter;
