@@ -21,29 +21,25 @@ usersRouter.get('/', ensureAuthenticated, async (_, res) => {
 
 // signup
 usersRouter.post('/', async (req, res) => {
-  try {
-    const { email, password, name } = req.body;
+  const { email, password, name } = req.body;
 
-    const createUser = new CreateUserService();
+  const createUser = new CreateUserService();
 
-    const user = await createUser.execute({
-      name,
-      email,
-      password,
-    });
+  const user = await createUser.execute({
+    name,
+    email,
+    password,
+  });
 
-    const userWithoutPassword = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      created_at: user.created_at,
-      updated_at: user.updated_at,
-    };
+  const userWithoutPassword = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    created_at: user.created_at,
+    updated_at: user.updated_at,
+  };
 
-    return res.json(userWithoutPassword);
-  } catch (err) {
-    return res.status(400).json({ error: err.message });
-  }
+  return res.json(userWithoutPassword);
 });
 
 usersRouter.patch(
@@ -51,20 +47,16 @@ usersRouter.patch(
   ensureAuthenticated,
   upload.single('avatar'),
   async (req, res) => {
-    try {
-      const { id: user_id } = req.user;
-      const { filename: avatarFilename } = req.file;
+    const { id: user_id } = req.user;
+    const { filename: avatarFilename } = req.file;
 
-      const updateUserAvatarService = new UpdateUserAvatarService();
-      const user = await updateUserAvatarService.execute({
-        user_id,
-        avatarFilename,
-      });
+    const updateUserAvatarService = new UpdateUserAvatarService();
+    const user = await updateUserAvatarService.execute({
+      user_id,
+      avatarFilename,
+    });
 
-      return res.json(user);
-    } catch (err) {
-      return res.status(400).json({ error: err.message });
-    }
+    return res.json(user);
   },
 );
 
